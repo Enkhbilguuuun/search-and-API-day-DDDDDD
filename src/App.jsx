@@ -1,27 +1,35 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Home from "./pages/home";
-import Login from "./pages/login";
-import SignUp from "./pages/signUp";
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
+import "./App.css";
 import Header from "./components/header";
-import { useState, createContext } from "react";
-
-export const darkModeContext = createContext();
-
+import { Card, Button } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [data, setData] = useState([]);
+  const [value, setValue] = useState();
+  const request = () => {
+    axios.get("https://jsonplaceholder.typicode.com/users").then((res) => {
+      setData(res.data);
+    });
+  };
 
+  useEffect(() => {
+    request();
+  }, []);
+  console.log(data);
   return (
-    <darkModeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path=":userId" element={<SignUp />} />
-        </Routes>
-      </BrowserRouter>
-    </darkModeContext.Provider>
+    <div>
+      <input
+        type="text"
+        name=""
+        id=""
+        onChange={(e) => setValue(e.target.value)}
+      />
+      {data.map((el) => {
+        return el.name.includes(value) && <Header data={el} />;
+      })}
+    </div>
   );
 }
 
