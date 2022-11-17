@@ -1,17 +1,63 @@
-import { useContext } from "react";
-import { darkModeContext } from "../App";
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useRef } from "react";
+import "./App.css";
+import Header from "./components/header";
+import { Card, Button } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import productCateg from "./components/productCateg";
 
-const Home = () => {
-  const { isDarkMode } = useContext(darkModeContext);
+export default function () {
+  const [data, setData] = useState([]);
+  const [id, setId] = useState(1);
 
-  const styles = {
-    box: {
-      width: 200,
-      height: 200,
-      backgroundColor: isDarkMode ? "blue" : "red",
-    },
+  const instance = axios.create({
+    baseURL: "https://dummyjson.com/",
+  });
+
+  //hereglegchdin data awj bga
+
+  const getData = async () => {
+    const rosponse = await instance.get(`products`);
+    console.log(rosponse);
+    setData(rosponse.data.products);
   };
-  return <div style={styles.box}>home color box</div>;
-};
 
-export default Home;
+  useEffect(() => {
+    getData();
+  }, []);
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div
+        className="rlcont"
+        style={{
+          width:"1490px",
+          height:"",
+          display: "flex",
+          flexWrap: "wrap",
+        }}
+      >
+        {data &&
+          data.map((el) => {
+            return <Header data={el} />;
+          })}
+      </div>
+    </div>
+  );
+}
+
+//   const [data, setData] = useState([]);
+//   const [value, setValue] = useState();
+//   const request = () => {
+//     axios.get("https://jsonplaceholder.typicode.com/users").then((res) => {
+//       setData(res.data);
+//     });
+//   };
